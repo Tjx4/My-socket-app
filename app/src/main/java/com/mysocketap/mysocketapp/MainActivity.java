@@ -12,8 +12,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,9 +30,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Context context;
     private final String LOGSTRING = "log_string";
-    private String ip = "http://emilygracetechnologies.com/";  //"196.37.22.179";
+    private String ip = "192.168.0.100";  //"196.37.22.179";
     private String message;
-    private int port =  5000;//9011;
+    private int port =  5000; //9011;
 
     private static Socket socket;
     private static ServerSocket serverSocket;
@@ -46,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onConnectButtonClicked(View view) {
         Button connectButton = (Button)view;
-        message = "Hello";
+        message = "Hello server";
         DoNetworkConnection doNetworkConnection = new DoNetworkConnection(connectButton);
         doNetworkConnection.execute();
     }
@@ -113,29 +121,43 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected String doInBackground(String... params) {
 
-            String results;
+            String results = "";
 
             try {
-                Looper.prepare();
+                //Looper.prepare();
 
-                socket = new Socket(ip,port);
+                socket = new Socket(ip, port);
+                socket.setSoTimeout(10000);
 
-                socket.setSoTimeout(5000);
+                String encoding = "UTF-8";
+                OutputStream outputStream = socket.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
+                bufferedWriter.write(message);
+                bufferedWriter.flush();
 
-                printWriter = new PrintWriter(socket.getOutputStream());
-                printWriter.write(message);
-                printWriter.flush();
-                printWriter.close();
+                InputStream inputStream = socket.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-                results = "Ok";
+                String str;
+
+                while ( (str = bufferedReader.readLine()) != null) {
+                    results += str;
+                }
+
+                bufferedWriter.close();
+                outputStream.close();
+
+                bufferedReader.close();
+                inputStream.close();
+                socket.close();
+
                 isSuccessful = true;
 
             }
             catch (IOException e){
                 Log.e(LOGSTRING, "Error: "+e);
-                results = "bad";
             }
 
             return results;
@@ -146,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
 
             if(isSuccessful) {
+                writeToReadmetxt(s);
                 showSuccessMessage("Data sent successfully");
             }
             else
@@ -156,5 +179,9 @@ public class MainActivity extends AppCompatActivity {
             setReadyState(connectButton);
         }
      }
+
+    private void writeToReadmetxt(String s) {
+        Toast.makeText(context, "Result = "+s,Toast.LENGTH_LONG).show();
+    }
 
 }
