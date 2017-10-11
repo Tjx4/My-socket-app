@@ -73,14 +73,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showErrorMessage(String message) {
-        showSuccessMessage("Error", message, R.mipmap.error_icon);
+        showMessageDialog("Error", message, R.mipmap.error_icon);
     }
 
     private void showSuccessMessage(String message) {
-        showSuccessMessage("Success", message, R.mipmap.success_icon);
+        showMessageDialog("Success", message, R.mipmap.success_icon);
     }
 
-    private void showSuccessMessage(String title, String message, int icon) {
+    private void showMessageDialog(String title, String message, int icon) {
 
         AlertDialog.Builder ab = new AlertDialog.Builder(context);
         ab.setTitle(title).setMessage(message).setIcon(icon).
@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
      class DoNetworkConnection extends AsyncTask<String, Integer, String> {
 
          private Button connectButton;
+         private boolean isSuccessful;
 
          public DoNetworkConnection(Button connectButton) {
              this.connectButton = connectButton;
@@ -129,11 +130,10 @@ public class MainActivity extends AppCompatActivity {
                 printWriter.close();
 
                 results = "Ok";
+                isSuccessful = true;
 
-                showSuccessMessage("Data sent successfully");
             }
             catch (IOException e){
-                showErrorMessage("Error sending data");
                 Log.e(LOGSTRING, "Error: "+e);
                 results = "bad";
             }
@@ -144,6 +144,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+
+            if(isSuccessful) {
+                showSuccessMessage("Data sent successfully");
+            }
+            else
+            {
+               showErrorMessage("Error sending data");
+            }
 
             setReadyState(connectButton);
         }
