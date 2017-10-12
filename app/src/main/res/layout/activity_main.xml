@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="189dp"
                 android:background="@color/responseTxtBackgroundColor"
-                android:enabled="false"
+                android:editable="false"
                 android:ems="10"
                 android:inputType="textMultiLine"
                 android:text="@string/not_connected_to_server"

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,21 +19,19 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
 
     private Context context;
-    private String message;
+    private String request;
     private boolean isbusy;
 
     private Button connectButton;
@@ -86,9 +83,9 @@ public class MainActivity extends AppCompatActivity {
         if(isbusy)
             return;
 
-        message = "Hello server";
+        request = new Constants().XMLMESSAGE;
         DoNetworkConnection doNetworkConnection = new DoNetworkConnection();
-        doNetworkConnection.execute(message);
+        doNetworkConnection.execute(request);
     }
 
     private void setBusyState(Button connectButton) {
@@ -144,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
      class DoNetworkConnection extends AsyncTask<String, Integer, String> {
 
          private final String LOGSTRING = "log_string";
-         private String ip = "192.168.0.101";  // 196.37.22.179;
-         private int port = 5000; //   9011
+         private String ip = "196.37.22.179";  // 196.37.22.179;
+         private int port = 9011; //   9011
          private boolean isSuccessful;
          private  Socket socket;
 
@@ -166,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
 
             try {
 
+                boolean isconnected = ip.equals(InetAddress.getLocalHost().getHostAddress().toString());
+
                 socket = new Socket(ip, port);
                 socket.setSoTimeout(10000);
 
@@ -176,13 +175,9 @@ public class MainActivity extends AppCompatActivity {
                 bufferedWriter.flush();
 
                 InputStream inputStream = socket.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF8"));
 
-                String str;
-
-                while ( (str = bufferedReader.readLine()) != null) {
-                    response += str;
-                }
+                response = bufferedReader.readLine();
 
                 bufferedWriter.close();
                 outputStream.close();
