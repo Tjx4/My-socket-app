@@ -2,12 +2,16 @@ package com.mysocketap.mysocketapp;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,18 +29,15 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
 
     private Context context;
-    private final String LOGSTRING = "log_string";
-    private String ip = "192.168.0.100";  //"196.37.22.179";
     private String message;
-    private int port =  5000; //9011;
+    private boolean isbusy;
 
-    private static Socket socket;
-    private static ServerSocket serverSocket;
-    private static PrintWriter printWriter;
+    private Button connectButton;
 
     private EditText displayTxt;
     private ProgressBar loadingSpinner;
@@ -47,16 +48,47 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         context = this;
+        connectButton = (Button) findViewById(R.id.btnConnect);
         displayTxt = (EditText)findViewById(R.id.txtDisplay);
         loadingSpinner = (ProgressBar)findViewById(R.id.progressBar);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.quit:
+                    finish();
+            break;
+            case R.id.connect:
+                startConnection(null);
+            break;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     public void onConnectButtonClicked(View view) {
-        Button connectButton = (Button)view;
+        startConnection(view);
+    }
+
+    public void startConnection(View view) {
+
+        if(isbusy)
+            return;
+
         message = "Hello server";
-        DoNetworkConnection doNetworkConnection = new DoNetworkConnection(connectButton);
-        doNetworkConnection.execute();
+        DoNetworkConnection doNetworkConnection = new DoNetworkConnection();
+        doNetworkConnection.execute(message);
     }
 
     private void setBusyState(Button connectButton) {
@@ -66,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setReadyState(Button connectButton) {
+        isbusy = false;
         loadingSpinner.setVisibility(View.INVISIBLE);
         enableButton(connectButton);
     }
@@ -103,30 +136,35 @@ public class MainActivity extends AppCompatActivity {
         a.show();
     }
 
+    private void writeToReadmetxt(String s) {
+        Toast.makeText(context, "Result = "+s,Toast.LENGTH_LONG).show();
+        displayTxt.setText(s);
+    }
 
      class DoNetworkConnection extends AsyncTask<String, Integer, String> {
 
-         private Button connectButton;
+         private final String LOGSTRING = "log_string";
+         private String ip = "192.168.0.101";  // 196.37.22.179;
+         private int port = 5000; //   9011
          private boolean isSuccessful;
+         private  Socket socket;
 
-         public DoNetworkConnection(Button connectButton) {
-             this.connectButton = connectButton;
-         }
+         public DoNetworkConnection() {}
 
          @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
             setBusyState(connectButton);
         }
 
         @Override
         protected String doInBackground(String... params) {
 
-            String results = "";
+            String response = "";
+
+            isbusy = true;
 
             try {
-                //Looper.prepare();
 
                 socket = new Socket(ip, port);
                 socket.setSoTimeout(10000);
@@ -134,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 String encoding = "UTF-8";
                 OutputStream outputStream = socket.getOutputStream();
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
-                bufferedWriter.write(message);
+                bufferedWriter.write(params[0]);
                 bufferedWriter.flush();
 
                 InputStream inputStream = socket.getInputStream();
@@ -143,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 String str;
 
                 while ( (str = bufferedReader.readLine()) != null) {
-                    results += str;
+                    response += str;
                 }
 
                 bufferedWriter.close();
@@ -156,11 +194,17 @@ public class MainActivity extends AppCompatActivity {
                 isSuccessful = true;
 
             }
+            catch (UnknownHostException e) {
+                Log.e(LOGSTRING, "UnknownHostException: "+e);
+            }
             catch (IOException e){
-                Log.e(LOGSTRING, "Error: "+e);
+                Log.e(LOGSTRING, "IOException: "+e);
+            }
+            catch (Resources.NotFoundException e){
+                Log.e(LOGSTRING, "NotFoundException: "+e);
             }
 
-            return results;
+            return response;
         }
 
         @Override
@@ -173,15 +217,12 @@ public class MainActivity extends AppCompatActivity {
             }
             else
             {
+               displayTxt.setText(R.string.not_connected_to_server);
                showErrorMessage("Error sending data");
             }
 
             setReadyState(connectButton);
         }
      }
-
-    private void writeToReadmetxt(String s) {
-        Toast.makeText(context, "Result = "+s,Toast.LENGTH_LONG).show();
-    }
 
 }
