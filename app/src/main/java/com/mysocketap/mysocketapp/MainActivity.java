@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -133,16 +136,37 @@ public class MainActivity extends AppCompatActivity {
         a.show();
     }
 
-    private void writeToReadmetxt(String s) {
-        Toast.makeText(context, "Result = "+s,Toast.LENGTH_LONG).show();
+    private void writeToReadmetxtAndShowResults(String s) {
         displayTxt.setText(s);
+        try {
+            writeToReadmetxft(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeToReadmetxft(String s) throws IOException {
+
+        // this will create a new name everytime and unique
+        File root = new File(Environment.getExternalStorageDirectory(), "Notes");
+
+        // if external memory exists and folder with name Notes
+
+        if (!root.exists())
+            root.mkdirs(); // this will create folder.
+
+        File filepath = new File(root, "readme.txt");  // file path to save
+        FileWriter writer = new FileWriter(filepath);
+        writer.append(s);
+        writer.flush();
+        writer.close();
     }
 
      class DoNetworkConnection extends AsyncTask<String, Integer, String> {
 
          private final String LOGSTRING = "log_string";
-         private String ip = "196.37.22.179";  // 196.37.22.179;
-         private int port = 9011; //   9011
+         private String ip = "196.37.22.179";
+         private int port = 9011;
          private boolean isSuccessful;
          private  Socket socket;
 
@@ -207,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
 
             if(isSuccessful) {
-                writeToReadmetxt(s);
+                writeToReadmetxtAndShowResults(s);
                 showSuccessMessage("Data sent successfully");
             }
             else
