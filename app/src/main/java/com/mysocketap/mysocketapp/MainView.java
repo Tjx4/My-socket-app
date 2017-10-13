@@ -16,5 +16,6 @@ public interface MainView {
     void showMessageDialog(String title, String message, int icon);
     void showToast(String message, int length);
     void writeToReadmetxtAndShowResults(String s);
+    void showDisplay(String s);
     void writeToReadmetxft(String s) throws IOException;
 }

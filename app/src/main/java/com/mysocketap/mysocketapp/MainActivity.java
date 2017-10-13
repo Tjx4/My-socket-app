@@ -162,22 +162,25 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
     @Override
     public void writeToReadmetxtAndShowResults(String s) {
-        displayTxt.setText(s);
+        showDisplay(s);
         try {
             writeToReadmetxft(s);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    @Override
+    public void showDisplay(String s) {
+        displayTxt.setText(s);
+    }
 
     @Override
     public void writeToReadmetxft(String s) throws IOException {
 
-        // this will create a new name everytime and unique
+        // this will get the sd card then create a folder called notes
         File root = new File(Environment.getExternalStorageDirectory(), "Notes");
 
-        // if external memory exists and folder with name Notes
-
+        // if it doesnt exist then create the directory
         if (!root.exists())
             root.mkdirs(); // this will create folder.
 
@@ -260,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements MainView{
             }
             else
             {
-               displayTxt.setText(R.string.not_connected_to_server);
+               showDisplay(getResources().getString(R.string.not_connected_to_server));
                showErrorMessage(getString(R.string.request_error));
             }
 

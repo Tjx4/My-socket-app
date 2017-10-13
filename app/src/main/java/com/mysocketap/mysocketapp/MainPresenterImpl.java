@@ -18,7 +18,6 @@ public class MainPresenterImpl implements MainPresenter{
 
     @Override
     public void onDestroy() {
-        mainView.showToast("Good bye", Toast.LENGTH_SHORT);
         mainView = null;
     }
 
