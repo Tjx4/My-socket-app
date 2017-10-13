@@ -31,16 +31,15 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainView{
 
     private Context context;
     private String request;
     private boolean isbusy;
-
     private Button connectButton;
-
     private EditText displayTxt;
     private ProgressBar loadingSpinner;
+    private MainPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +47,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         context = this;
+        presenter = new MainPresenterImpl(this);
         connectButton = (Button) findViewById(R.id.btnConnect);
         displayTxt = (EditText)findViewById(R.id.txtDisplay);
         loadingSpinner = (ProgressBar)findViewById(R.id.progressBar);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+    @Override protected void onDestroy() {
+        presenter.onDestroy();
+        super.onDestroy();
     }
 
     @Override
@@ -77,51 +87,60 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
     public void onConnectButtonClicked(View view) {
         startConnection(view);
     }
 
+    @Override
     public void startConnection(View view) {
 
         if(isbusy)
             return;
 
-        request = new Constants().XMLMESSAGE;
+        request = new Constants().REQUESTXML;
         DoNetworkConnection doNetworkConnection = new DoNetworkConnection();
         doNetworkConnection.execute(request);
     }
 
-    private void setBusyState(Button connectButton) {
+    @Override
+    public void setBusyState(Button connectButton) {
         displayTxt.setText(R.string.connecting);
         disableButton(connectButton);
         loadingSpinner.setVisibility(View.VISIBLE);
     }
 
-    private void setReadyState(Button connectButton) {
+    @Override
+    public void setReadyState(Button connectButton) {
         isbusy = false;
         loadingSpinner.setVisibility(View.INVISIBLE);
         enableButton(connectButton);
     }
 
-  private void disableButton(Button connectButton) {
+    @Override
+    public void disableButton(Button connectButton) {
         connectButton.setEnabled(false);
         connectButton.setText("");
     }
 
-    private void enableButton(Button connectButton) {
+    @Override
+    public void enableButton(Button connectButton) {
         connectButton.setEnabled(true);
         connectButton.setText(getResources().getString(R.string.connect_to_server));
     }
 
-    private void showErrorMessage(String message) {
+    @Override
+    public void showErrorMessage(String message) {
         showMessageDialog("Error", message, R.mipmap.error_icon);
     }
 
-    private void showSuccessMessage(String message) {
+    @Override
+    public void showSuccessMessage(String message) {
         showMessageDialog("Success", message, R.mipmap.success_icon);
     }
 
-    private void showMessageDialog(String title, String message, int icon) {
+    @Override
+    public void showMessageDialog(String title, String message, int icon) {
 
         AlertDialog.Builder ab = new AlertDialog.Builder(context);
         ab.setTitle(title).setMessage(message).setIcon(icon).
@@ -136,7 +155,13 @@ public class MainActivity extends AppCompatActivity {
         a.show();
     }
 
-    private void writeToReadmetxtAndShowResults(String s) {
+    @Override
+    public void showToast(String message, int length) {
+        Toast.makeText(context, message, length).show();
+    }
+
+    @Override
+    public void writeToReadmetxtAndShowResults(String s) {
         displayTxt.setText(s);
         try {
             writeToReadmetxft(s);
@@ -145,7 +170,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void writeToReadmetxft(String s) throws IOException {
+    @Override
+    public void writeToReadmetxft(String s) throws IOException {
 
         // this will create a new name everytime and unique
         File root = new File(Environment.getExternalStorageDirectory(), "Notes");
@@ -165,8 +191,8 @@ public class MainActivity extends AppCompatActivity {
      class DoNetworkConnection extends AsyncTask<String, Integer, String> {
 
          private final String LOGSTRING = "log_string";
-         private String ip = "196.37.22.179";
-         private int port = 9011;
+         private String ip = "10.0.2.2"; //"196.37.22.179";
+         private int port = 5000; //9011;
          private boolean isSuccessful;
          private  Socket socket;
 
@@ -187,8 +213,6 @@ public class MainActivity extends AppCompatActivity {
 
             try {
 
-                boolean isconnected = ip.equals(InetAddress.getLocalHost().getHostAddress().toString());
-
                 socket = new Socket(ip, port);
                 socket.setSoTimeout(10000);
 
@@ -199,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                 bufferedWriter.flush();
 
                 InputStream inputStream = socket.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF8"));
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, encoding));
 
                 response = bufferedReader.readLine();
 
@@ -232,12 +256,12 @@ public class MainActivity extends AppCompatActivity {
 
             if(isSuccessful) {
                 writeToReadmetxtAndShowResults(s);
-                showSuccessMessage("Data sent successfully");
+                showSuccessMessage(getString(R.string.request_success));
             }
             else
             {
                displayTxt.setText(R.string.not_connected_to_server);
-               showErrorMessage("Error sending data");
+               showErrorMessage(getString(R.string.request_error));
             }
 
             setReadyState(connectButton);
