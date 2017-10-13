@@ -1,4 +1,4 @@
-package com.mysocketap.mysocketapp;
+package com.mysocketap.mysocketapp.views;
 
 import android.view.View;
 import android.widget.Button;

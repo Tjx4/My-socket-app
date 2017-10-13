@@ -1,9 +1,9 @@
-package com.mysocketap.mysocketapp;
-
+package com.mysocketap.mysocketapp.presenters;
 
 import android.widget.Toast;
+import com.mysocketap.mysocketapp.views.MainView;
 
-public class MainPresenterImpl implements MainPresenter{
+public class MainPresenterImpl implements MainPresenter {
 
     private MainView mainView;
 

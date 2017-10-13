@@ -1,4 +1,4 @@
-package com.mysocketap.mysocketapp;
+package com.mysocketap.mysocketapp.presenters;
 
 public interface MainPresenter {
     void onResume();

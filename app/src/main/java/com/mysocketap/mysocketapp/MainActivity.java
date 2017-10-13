@@ -18,6 +18,11 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.mysocketap.mysocketapp.constants.Constants;
+import com.mysocketap.mysocketapp.presenters.MainPresenter;
+import com.mysocketap.mysocketapp.presenters.MainPresenterImpl;
+import com.mysocketap.mysocketapp.views.MainView;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,11 +32,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class MainActivity extends AppCompatActivity implements MainView{
+public class MainActivity extends AppCompatActivity implements MainView {
 
     private Context context;
     private String request;
@@ -59,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements MainView{
         presenter.onResume();
     }
     @Override protected void onDestroy() {
-        presenter.onDestroy();
         super.onDestroy();
+        presenter.onDestroy();
     }
 
     @Override
@@ -72,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // the first item in the menu is of id @id/quit and its purpose is to close the app, the second item is of @id/connect and it just calls the startConnection method
 
         switch (item.getItemId()) {
             case R.id.quit:
@@ -89,22 +94,24 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
     @Override
     public void onConnectButtonClicked(View view) {
+        // this method handles the connect button's click event and then calls the startConnection method
         startConnection(view);
     }
 
     @Override
     public void startConnection(View view) {
-
+        // This method is responsible for creating the connection between the client and the server
         if(isbusy)
             return;
 
-        request = new Constants().REQUESTXML;
+        request = Constants.REQUESTXML;
         DoNetworkConnection doNetworkConnection = new DoNetworkConnection();
         doNetworkConnection.execute(request);
     }
 
     @Override
     public void setBusyState(Button connectButton) {
+        // This method sets the state of the app as busy, it changes the views to reflect that their busy processing
         displayTxt.setText(R.string.connecting);
         disableButton(connectButton);
         loadingSpinner.setVisibility(View.VISIBLE);
@@ -112,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
     @Override
     public void setReadyState(Button connectButton) {
+        // this method sets the state of the app as ready to perform actions, meaning there are no processes running and it also changes the views to reflect their ready status
         isbusy = false;
         loadingSpinner.setVisibility(View.INVISIBLE);
         enableButton(connectButton);
@@ -119,29 +127,33 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
     @Override
     public void disableButton(Button connectButton) {
+        // This method disables the button when the app is busy in the background
         connectButton.setEnabled(false);
         connectButton.setText("");
     }
 
     @Override
     public void enableButton(Button connectButton) {
+        // This method enables the button when the call is finished
         connectButton.setEnabled(true);
         connectButton.setText(getResources().getString(R.string.connect_to_server));
     }
 
     @Override
     public void showErrorMessage(String message) {
+        //This method formats the showMessage method to be an error type
         showMessageDialog("Error", message, R.mipmap.error_icon);
     }
 
     @Override
     public void showSuccessMessage(String message) {
+        //This method formats the showMessage method to be a success type
         showMessageDialog("Success", message, R.mipmap.success_icon);
     }
 
     @Override
     public void showMessageDialog(String title, String message, int icon) {
-
+        // This method shows a dilog message
         AlertDialog.Builder ab = new AlertDialog.Builder(context);
         ab.setTitle(title).setMessage(message).setIcon(icon).
         setNeutralButton("Ok", new DialogInterface.OnClickListener() {
@@ -157,11 +169,13 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
     @Override
     public void showToast(String message, int length) {
+        // This method just shows a toast message
         Toast.makeText(context, message, length).show();
     }
 
     @Override
     public void writeToReadmetxtAndShowResults(String s) {
+        // This method displays the results and also writes the results to the readme.txt file
         showDisplay(s);
         try {
             writeToReadmetxft(s);
@@ -171,11 +185,14 @@ public class MainActivity extends AppCompatActivity implements MainView{
     }
     @Override
     public void showDisplay(String s) {
+        //This method displays what ever string is passed through in the display EditText
         displayTxt.setText(s);
     }
 
     @Override
     public void writeToReadmetxft(String s) throws IOException {
+
+        // For the purpose of this demo I'm putting the readme.txt file in the sd card in a folder called notes
 
         // this will get the sd card then create a folder called notes
         File root = new File(Environment.getExternalStorageDirectory(), "Notes");
@@ -216,25 +233,25 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
             try {
 
-                socket = new Socket(ip, port);
-                socket.setSoTimeout(10000);
+                socket = new Socket(ip, port); // I instanciate the socket
+                socket.setSoTimeout(10000); // I set the connection timeout
 
-                String encoding = "UTF-8";
+                String encoding = "UTF-8"; // set the encoding
                 OutputStream outputStream = socket.getOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));  // write to socket using buffered writer
+
                 bufferedWriter.write(params[0]);
                 bufferedWriter.flush();
 
                 InputStream inputStream = socket.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, encoding));
 
-                response = bufferedReader.readLine();
+                response = bufferedReader.readLine(); // read the server response
 
-                bufferedWriter.close();
-                outputStream.close();
-
-                bufferedReader.close();
-                inputStream.close();
+                bufferedWriter.close(); // Close bufferedWriter
+                outputStream.close(); // Close output stream
+                bufferedReader.close(); // Close bufferedReader
+                inputStream.close(); // Close inputStream
                 socket.close();
 
                 isSuccessful = true;
