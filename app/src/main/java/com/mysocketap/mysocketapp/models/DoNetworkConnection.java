@@ -18,7 +18,7 @@ import java.net.UnknownHostException;
 public class DoNetworkConnection extends AsyncTask<String, Integer, String> {
 
     private final String LOGSTRING = "log_string";
-    private String ip = "10.0.2.2"; //"196.37.22.179";
+    private String ip = "192.168.0.100"; //"196.37.22.179";
     private int port = 5000; //9011;
     private boolean isSuccessful;
     private Socket socket;
