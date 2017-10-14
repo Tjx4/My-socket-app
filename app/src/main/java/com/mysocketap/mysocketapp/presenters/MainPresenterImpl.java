@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.mysocketap.mysocketapp.R;
 import com.mysocketap.mysocketapp.constants.Constants;
 import com.mysocketap.mysocketapp.models.DoNetworkConnection;
-import com.mysocketap.mysocketapp.views.MainView;
+import com.mysocketap.mysocketapp.views.SocetConnectionView;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -27,11 +27,11 @@ public class MainPresenterImpl implements MainPresenter {
     public Button connectButton;
     public EditText displayTxt;
     public ProgressBar loadingSpinner;
-    public MainView mainView;
+    public SocetConnectionView socetConnectionView;
 
-    public MainPresenterImpl(MainView mainView) {
-        this.mainView = mainView;
-        activity = (Activity)mainView;
+    public MainPresenterImpl(SocetConnectionView socetConnectionView) {
+        this.socetConnectionView = socetConnectionView;
+        activity = (Activity) socetConnectionView;
         connectButton = (Button) activity.findViewById(R.id.btnConnect);
         displayTxt = (EditText)activity.findViewById(R.id.txtDisplay);
         loadingSpinner = (ProgressBar)activity.findViewById(R.id.progressBar);
@@ -39,17 +39,17 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void onResume() {
-        String welcomeMessage = ((Activity)mainView).getResources().getString(R.string.welcome_message);
+        String welcomeMessage = ((Activity) socetConnectionView).getResources().getString(R.string.welcome_message);
         showToast(welcomeMessage, Toast.LENGTH_SHORT);
     }
 
     @Override
     public void onDestroy() {
-        mainView = null;
+        socetConnectionView = null;
     }
 
-    public MainView getMainView() {
-        return mainView;
+    public SocetConnectionView getSocetConnectionView() {
+        return socetConnectionView;
     }
 
     @Override

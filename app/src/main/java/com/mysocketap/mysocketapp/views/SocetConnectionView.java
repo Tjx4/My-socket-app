@@ -10,5 +10,5 @@ import com.mysocketap.mysocketapp.presenters.MainPresenter;
 
 import java.io.IOException;
 
-public interface MainView {
+public interface SocetConnectionView {
 }

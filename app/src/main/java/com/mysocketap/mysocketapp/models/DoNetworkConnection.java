@@ -54,6 +54,13 @@ public class DoNetworkConnection extends AsyncTask<String, Integer, String> {
             bufferedWriter.write(params[0]);
             bufferedWriter.flush();
 
+// Removeeèeeeeeeeeeeeee
+try {
+    Thread.sleep(3000);
+} catch (InterruptedException e) {
+    e.printStackTrace();
+}
+
             InputStream inputStream = socket.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, encoding));
 
