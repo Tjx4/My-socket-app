@@ -20,22 +20,10 @@
             android:paddingTop="20dp">
 
             <!-- I used a multiline EditText and disabled editing for pursely convinience as it houses text and scrolls -->
-            <EditText
-                android:id="@+id/txtDisplay"
-                android:layout_width="match_parent"
-                android:layout_height="189dp"
-                android:background="@color/responseTxtBackgroundColor"
-                android:enabled="true"
-                android:focusableInTouchMode="false"
-                android:scrollbars="vertical"
-                android:inputType="textMultiLine"
-                android:text="@string/not_connected_to_server"
-                android:textAlignment="center"
-                android:textColor="@android:color/background_light"
-                tools:layout_editor_absoluteX="52dp"
-                tools:layout_editor_absoluteY="46dp"/>
+            <EditText style="@style/ResponseDisplayer"
+                android:id="@+id/txtDisplay"/>
 
-                <!-- This FrameLayout is so the loading spinner can appear over the button-->
+            <!-- This FrameLayout is so the loading spinner can appear over the button-->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
