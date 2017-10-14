@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity implements SocetConnectionVi
         Intent i = new Intent(this, SocketConnectionActivity.class);
         startActivity(i);
         finish();
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
     }
 
 }
