@@ -1,21 +1,14 @@
 package com.mysocketap.mysocketapp.views;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+
+import com.mysocketap.mysocketapp.presenters.MainPresenter;
+
 import java.io.IOException;
 
 public interface MainView {
-    void onConnectButtonClicked(View view);
-    void startConnection(View view);
-    void setBusyState(Button connectButton);
-    void setReadyState(Button connectButton);
-    void disableButton(Button connectButton);
-    void enableButton(Button connectButton);
-    void showErrorMessage(String message);
-    void showSuccessMessage(String message);
-    void showMessageDialog(String title, String message, int icon);
-    void showToast(String message, int length);
-    void writeToReadmetxtAndShowResults(String s);
-    void showDisplay(String s);
-    void writeToReadmetxft(String s) throws IOException;
 }
