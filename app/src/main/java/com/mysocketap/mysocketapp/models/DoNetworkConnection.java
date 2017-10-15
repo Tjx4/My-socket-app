@@ -2,30 +2,41 @@ package com.mysocketap.mysocketapp.models;
 
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.provider.DocumentsContract;
 import android.util.Log;
 import com.mysocketap.mysocketapp.R;
-import com.mysocketap.mysocketapp.presenters.MainPresenterImpl;
+import com.mysocketap.mysocketapp.presenters.SocketConnectionPresenter;
+
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.math.BigInteger;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 
 public class DoNetworkConnection extends AsyncTask<String, Integer, String> {
 
     private final String LOGSTRING = "log_string";
-    private String ip = "10.0.2.2"; //"196.37.22.179";
-    private int port = 5000; //9011;
+    private String ip = "196.37.22.179";
+    private int port = 9011;
     private boolean isSuccessful;
     private Socket socket;
 
-    private MainPresenterImpl presenter;
+    private SocketConnectionPresenter presenter;
 
-    public DoNetworkConnection(MainPresenterImpl presenter) {
+    public DoNetworkConnection(SocketConnectionPresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -37,34 +48,28 @@ public class DoNetworkConnection extends AsyncTask<String, Integer, String> {
 
     @Override
     protected String doInBackground(String... params) {
-
+        presenter.isbusy = true;
         String response = "";
 
-        presenter.isbusy = true;
-
         try {
-
-            socket = new Socket(ip, port); // I instanciate the socket
+            socket = new Socket(ip, port); // I instantiate the socket
             socket.setSoTimeout(10000); // I set the connection timeout
 
             String encoding = "UTF-8"; // set the encoding
             OutputStream outputStream = socket.getOutputStream();
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));  // write to socket using buffered writer
-
             bufferedWriter.write(params[0]);
             bufferedWriter.flush();
 
-// Removeeèeeeeeeeeeeeee
-try {
-    Thread.sleep(3000);
-} catch (InterruptedException e) {
-    e.printStackTrace();
-}
+// Removeeèeeeeeeeeeeeee -------------------------------
+            delayProcess();
+// Removeeèeeeeeeeeeeeee -------------------------------
 
             InputStream inputStream = socket.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, encoding));
-
             response = bufferedReader.readLine(); // read the server response
+
+Log.i(LOGSTRING, "response: "+response);
 
             bufferedWriter.close(); // Close bufferedWriter
             outputStream.close(); // Close output stream
@@ -88,6 +93,14 @@ try {
         return response;
     }
 
+    private void delayProcess() {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
@@ -103,5 +116,25 @@ try {
         }
 
         presenter.setReadyState(presenter.connectButton);
+    }
+
+
+    private static BigInteger readFibonacciXMLRPCResponse(
+            InputStream in) throws IOException, NumberFormatException,
+            StringIndexOutOfBoundsException {
+
+        StringBuffer sb = new StringBuffer();
+        Reader reader = new InputStreamReader(in, "UTF-8");
+        int c;
+        while ((c = in.read()) != -1) sb.append((char) c);
+
+        String document = sb.toString();
+        String startTag = "<value><double>";
+        String endTag = "</double></value>";
+        int start = document.indexOf(startTag) + startTag.length();
+        int end = document.indexOf(endTag);
+        String result = document.substring(start, end);
+        return new BigInteger(result);
+
     }
 }

@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Environment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,13 +16,13 @@ import android.widget.Toast;
 import com.mysocketap.mysocketapp.R;
 import com.mysocketap.mysocketapp.constants.Constants;
 import com.mysocketap.mysocketapp.models.DoNetworkConnection;
-import com.mysocketap.mysocketapp.views.SocetConnectionView;
+import com.mysocketap.mysocketapp.views.ISocetConnectionView;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class MainPresenterImpl implements MainPresenter {
+public class SocketConnectionPresenter implements ISocketConnectionPresenter {
 
     public Activity activity;
     public String request;
@@ -27,11 +30,11 @@ public class MainPresenterImpl implements MainPresenter {
     public Button connectButton;
     public EditText displayTxt;
     public ProgressBar loadingSpinner;
-    public SocetConnectionView socetConnectionView;
+    public ISocetConnectionView ISocetConnectionView;
 
-    public MainPresenterImpl(SocetConnectionView socetConnectionView) {
-        this.socetConnectionView = socetConnectionView;
-        activity = (Activity) socetConnectionView;
+    public SocketConnectionPresenter(ISocetConnectionView ISocetConnectionView) {
+        this.ISocetConnectionView = ISocetConnectionView;
+        activity = (Activity) ISocetConnectionView;
         connectButton = (Button) activity.findViewById(R.id.btnConnect);
         displayTxt = (EditText)activity.findViewById(R.id.txtDisplay);
         loadingSpinner = (ProgressBar)activity.findViewById(R.id.progressBar);
@@ -39,17 +42,49 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void onResume() {
-        String welcomeMessage = ((Activity) socetConnectionView).getResources().getString(R.string.welcome_message);
+        String welcomeMessage = ((Activity) ISocetConnectionView).getResources().getString(R.string.welcome_message);
         showToast(welcomeMessage, Toast.LENGTH_SHORT);
     }
 
     @Override
     public void onDestroy() {
-        socetConnectionView = null;
+        ISocetConnectionView = null;
     }
 
-    public SocetConnectionView getSocetConnectionView() {
-        return socetConnectionView;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = activity.getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // the first item in the menu is of id @id/quit and its purpose is to close the app, the second item is of @id/connect and it just calls the startConnection method
+
+        switch (item.getItemId()) {
+            case R.id.quit:
+                activity.finish();
+                break;
+            case R.id.connect:
+                startConnection(null);
+                break;
+
+            default:
+                return activity.onOptionsItemSelected(item);
+        }
+        return activity.onOptionsItemSelected(item);
+
+    }
+
+    public void onConnectButtonClicked(View view) {
+        // this method handles the connect button's click event and then calls the startConnection method
+        startConnection(view);
+    }
+
+    public ISocetConnectionView getISocetConnectionView() {
+        return ISocetConnectionView;
     }
 
     @Override

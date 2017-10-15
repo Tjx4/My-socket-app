@@ -10,6 +10,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <!-- I used a linear layout with a vertical orientation to align views vertically -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,8 +21,9 @@
             android:paddingTop="20dp">
 
             <!-- I used a multiline EditText and disabled editing for pursely convinience as it houses text and scrolls -->
-            <EditText style="@style/ResponseDisplayer"
-                      android:id="@+id/txtDisplay"/>
+            <EditText
+                style="@style/ResponseDisplayer"
+                android:id="@+id/txtDisplay"/>
 
             <!-- This FrameLayout is so the loading spinner can appear over the button-->
             <FrameLayout
@@ -29,20 +31,21 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="30dp">
 
-                <!-- This is just a button that triggers the startConnection method -->
-                <Button
-                    android:id="@+id/btnConnect"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:onClick="onConnectButtonClicked"
-                    android:text="@string/connect_to_server"/>
+            <!-- This is a button that triggers the startConnection method -->
+            <Button
+                style="@style/btnConnection"
+                android:id="@+id/btnConnect"
+                android:onClick="onConnectButtonClicked"
+                android:text="@string/connect_to_server"/>
 
-                <!-- This is just a loading spinner that appears over the button while the app is busy -->
-                <ProgressBar style="@style/LoadingSpinner"
-                             android:id="@+id/progressBar"/>
+            <!-- This is a loading spinner that appears over the button while the app is busy -->
+            <ProgressBar style="@style/LoadingSpinner"
+                android:id="@+id/progressBar"/>
+
             </FrameLayout>
 
         </LinearLayout>
+
     </ScrollView>
 
 </FrameLayout>

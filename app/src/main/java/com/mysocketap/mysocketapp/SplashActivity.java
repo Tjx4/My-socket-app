@@ -3,10 +3,9 @@ package com.mysocketap.mysocketapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import com.mysocketap.mysocketapp.views.SocetConnectionView;
 import com.mysocketap.mysocketapp.views.SocketConnectionActivity;
 
-public class SplashActivity extends AppCompatActivity implements SocetConnectionView {
+public class SplashActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
