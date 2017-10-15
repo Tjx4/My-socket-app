@@ -11,12 +11,34 @@ public class SplashActivity extends AppCompatActivity implements SocetConnection
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        delaySplashScreen();
+    }
 
+    private void goToConnectionActivity() {
         Intent i = new Intent(this, SocketConnectionActivity.class);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         startActivity(i);
         finish();
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
 
+    private void delaySplashScreen() {
+
+        Thread lTimer = new Thread() {
+
+            public void run() {
+
+                try {
+                    Thread.sleep(3000);
+                    goToConnectionActivity();
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+
+        lTimer.start();
     }
 
 }

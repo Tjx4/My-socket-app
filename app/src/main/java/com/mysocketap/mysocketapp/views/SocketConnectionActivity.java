@@ -19,7 +19,7 @@ public class SocketConnectionActivity extends AppCompatActivity implements Socet
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_socket_connection);
-
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         presenter = new MainPresenterImpl(this);
     }
 
