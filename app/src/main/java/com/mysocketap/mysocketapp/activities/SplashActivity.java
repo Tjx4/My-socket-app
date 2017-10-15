@@ -1,9 +1,10 @@
-package com.mysocketap.mysocketapp;
+package com.mysocketap.mysocketapp.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import com.mysocketap.mysocketapp.views.SocketConnectionActivity;
+
+import com.mysocketap.mysocketapp.R;
 
 public class SplashActivity extends AppCompatActivity{
 

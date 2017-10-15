@@ -9,8 +9,9 @@ import java.io.IOException;
 public interface ISocketConnectionPresenter {
     void onResume();
     void onDestroy();
-    boolean onCreateOptionsMenu(Menu menu);
-    boolean onOptionsItemSelected(MenuItem item);
+    boolean menuCreated(Menu menu);
+    boolean menuItemSelected(MenuItem item);
+    void onConnectButtonClicked(View view);
     void startConnection(View view);
     void setBusyState(Button connectButton);
     void setReadyState(Button connectButton);

@@ -1,30 +1,19 @@
-package com.mysocketap.mysocketapp.models;
+package com.mysocketap.mysocketapp.providers;
 
 import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.provider.DocumentsContract;
 import android.util.Log;
 import com.mysocketap.mysocketapp.R;
 import com.mysocketap.mysocketapp.presenters.SocketConnectionPresenter;
-
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.math.BigInteger;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 
 public class DoNetworkConnection extends AsyncTask<String, Integer, String> {
 
@@ -33,7 +22,6 @@ public class DoNetworkConnection extends AsyncTask<String, Integer, String> {
     private int port = 9011;
     private boolean isSuccessful;
     private Socket socket;
-
     private SocketConnectionPresenter presenter;
 
     public DoNetworkConnection(SocketConnectionPresenter presenter) {
@@ -61,7 +49,7 @@ public class DoNetworkConnection extends AsyncTask<String, Integer, String> {
             bufferedWriter.write(params[0]);
             bufferedWriter.flush();
 
-            delayProcess(); // This is just to delay inorder to show the progress bar
+            delayProcess(); // Just for this demo, this is just a method to delay in-order to show the progress bar
 
             // Read the server's response
             InputStream inputStream = socket.getInputStream();

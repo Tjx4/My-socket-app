@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mysocketap.mysocketapp.views.SocketConnectionActivity">
+    tools:context="com.mysocketap.mysocketapp.activities.SocketConnectionActivity">
 
     <!-- I used a scrollview to allow scrolling in-case user is in landscape mode and the screen cuts off-->
     <ScrollView
@@ -22,7 +22,7 @@
 
             <!-- I used a multiline EditText and disabled editing for purely convenience as it houses text and scrolls -->
             <EditText
-                style="@style/ResponseDisplayer"
+                style="@style/TxtResponseDisplayer"
                 android:id="@+id/txtDisplay"/>
 
             <!-- This FrameLayout is so the loading spinner can appear over the button-->

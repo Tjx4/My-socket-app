@@ -1,4 +1,4 @@
-package com.mysocketap.mysocketapp.views;
+package com.mysocketap.mysocketapp.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.View;
 import com.mysocketap.mysocketapp.R;
 import com.mysocketap.mysocketapp.presenters.ISocketConnectionPresenter;
 import com.mysocketap.mysocketapp.presenters.SocketConnectionPresenter;
+import com.mysocketap.mysocketapp.views.ISocketConnectionView;
 
 public class SocketConnectionActivity extends AppCompatActivity implements ISocketConnectionView {
 
@@ -36,13 +37,13 @@ public class SocketConnectionActivity extends AppCompatActivity implements ISock
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Calls onCreateOptionsMenu in the presenter
-        return presenter.onCreateOptionsMenu(menu);
+        return presenter.menuCreated(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Calls onOptionsItemSelected in the presenter
-        return presenter.onOptionsItemSelected(item);
+        // Calls menuItemSelected in the presenter
+        return presenter.menuItemSelected(item);
     }
 
     public void onConnectButtonClicked(View view) {
