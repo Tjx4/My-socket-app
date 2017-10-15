@@ -4,6 +4,6 @@
     <string name="connect_to_server">Connect to server</string>
     <string name="connecting">Connecting please wait...</string>
     <string name="request_error">Request error</string>
-    <string name="request_success">Request successfully!</string>
+    <string name="request_success">Request successful!</string>
     <string name="welcome_message">Welcome to my socket app</string>
 </resources>
