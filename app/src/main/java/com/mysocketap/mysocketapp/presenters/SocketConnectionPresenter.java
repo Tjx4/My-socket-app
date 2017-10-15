@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.mysocketap.mysocketapp.R;
 import com.mysocketap.mysocketapp.constants.Constants;
 import com.mysocketap.mysocketapp.models.DoNetworkConnection;
-import com.mysocketap.mysocketapp.views.ISocetConnectionView;
+import com.mysocketap.mysocketapp.views.ISocketConnectionView;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,11 +30,11 @@ public class SocketConnectionPresenter implements ISocketConnectionPresenter {
     public Button connectButton;
     public EditText displayTxt;
     public ProgressBar loadingSpinner;
-    public ISocetConnectionView ISocetConnectionView;
+    public ISocketConnectionView ISocketConnectionView;
 
-    public SocketConnectionPresenter(ISocetConnectionView ISocetConnectionView) {
-        this.ISocetConnectionView = ISocetConnectionView;
-        activity = (Activity) ISocetConnectionView;
+    public SocketConnectionPresenter(ISocketConnectionView ISocketConnectionView) {
+        this.ISocketConnectionView = ISocketConnectionView;
+        activity = (Activity) ISocketConnectionView;
         connectButton = (Button) activity.findViewById(R.id.btnConnect);
         displayTxt = (EditText)activity.findViewById(R.id.txtDisplay);
         loadingSpinner = (ProgressBar)activity.findViewById(R.id.progressBar);
@@ -42,13 +42,13 @@ public class SocketConnectionPresenter implements ISocketConnectionPresenter {
 
     @Override
     public void onResume() {
-        String welcomeMessage = ((Activity) ISocetConnectionView).getResources().getString(R.string.welcome_message);
+        String welcomeMessage = ((Activity) ISocketConnectionView).getResources().getString(R.string.welcome_message);
         showToast(welcomeMessage, Toast.LENGTH_SHORT);
     }
 
     @Override
     public void onDestroy() {
-        ISocetConnectionView = null;
+        ISocketConnectionView = null;
     }
 
 
@@ -83,8 +83,8 @@ public class SocketConnectionPresenter implements ISocketConnectionPresenter {
         startConnection(view);
     }
 
-    public ISocetConnectionView getISocetConnectionView() {
-        return ISocetConnectionView;
+    public ISocketConnectionView getISocketConnectionView() {
+        return ISocketConnectionView;
     }
 
     @Override
@@ -104,6 +104,7 @@ public class SocketConnectionPresenter implements ISocketConnectionPresenter {
         displayTxt.setText(R.string.connecting);
         disableButton(connectButton);
         loadingSpinner.setVisibility(View.VISIBLE);
+        isbusy = true;
     }
 
     @Override

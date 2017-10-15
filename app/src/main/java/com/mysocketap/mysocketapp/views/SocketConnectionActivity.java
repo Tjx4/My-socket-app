@@ -9,7 +9,7 @@ import com.mysocketap.mysocketapp.R;
 import com.mysocketap.mysocketapp.presenters.ISocketConnectionPresenter;
 import com.mysocketap.mysocketapp.presenters.SocketConnectionPresenter;
 
-public class SocketConnectionActivity extends AppCompatActivity implements ISocetConnectionView {
+public class SocketConnectionActivity extends AppCompatActivity implements ISocketConnectionView {
 
     private ISocketConnectionPresenter presenter;
 
@@ -24,13 +24,13 @@ public class SocketConnectionActivity extends AppCompatActivity implements ISoce
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.onResume();
+        presenter.onResume();  // Calls onResume in the presenter
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.onDestroy();
+        presenter.onDestroy(); // Calls onDestroy in the presenter
     }
 
     @Override
@@ -46,7 +46,7 @@ public class SocketConnectionActivity extends AppCompatActivity implements ISoce
     }
 
     public void onConnectButtonClicked(View view) {
-        // this method handles the connect button's click event and then calls the startConnection method
+        // Method handles the connect button's click event and then calls the startConnection method
         presenter.startConnection(view);
     }
 

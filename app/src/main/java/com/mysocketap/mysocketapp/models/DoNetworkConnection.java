@@ -43,38 +43,36 @@ public class DoNetworkConnection extends AsyncTask<String, Integer, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        presenter.setBusyState(presenter.connectButton);
+        presenter.setBusyState(presenter.connectButton); // Set the app state to busy
     }
 
     @Override
     protected String doInBackground(String... params) {
-        presenter.isbusy = true;
         String response = "";
 
         try {
-            socket = new Socket(ip, port); // I instantiate the socket
-            socket.setSoTimeout(10000); // I set the connection timeout
+            socket = new Socket(ip, port); // Instantiate the socket
+            socket.setSoTimeout(10000); // Set the connection timeout
+            String encoding = "UTF-8"; // Set the encoding
 
-            String encoding = "UTF-8"; // set the encoding
+            // Send the request to the server
             OutputStream outputStream = socket.getOutputStream();
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));  // write to socket using buffered writer
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
             bufferedWriter.write(params[0]);
             bufferedWriter.flush();
 
-// Removeeèeeeeeeeeeeeee -------------------------------
-            delayProcess();
-// Removeeèeeeeeeeeeeeee -------------------------------
+            delayProcess(); // This is just to delay inorder to show the progress bar
 
+            // Read the server's response
             InputStream inputStream = socket.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, encoding));
-            response = bufferedReader.readLine(); // read the server response
+            response = bufferedReader.readLine();
 
-Log.i(LOGSTRING, "response: "+response);
-
-            bufferedWriter.close(); // Close bufferedWriter
-            outputStream.close(); // Close output stream
-            bufferedReader.close(); // Close bufferedReader
-            inputStream.close(); // Close inputStream
+            // Close socket and streams
+            bufferedWriter.close();
+            outputStream.close();
+            bufferedReader.close();
+            inputStream.close();
             socket.close();
 
             isSuccessful = true;
@@ -93,48 +91,30 @@ Log.i(LOGSTRING, "response: "+response);
         return response;
     }
 
-    private void delayProcess() {
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
 
         if(isSuccessful) {
+            // Write the server response to readme.txt and  also show it on the display plus notify the user that the request was successfull
             presenter.writeToReadmetxtAndShowResults(s);
             presenter.showSuccessMessage(presenter.activity.getString(R.string.request_success));
         }
         else
         {
+            // Show not connected text on the display and notify the user that the request failed
             presenter.showDisplay(presenter.activity.getResources().getString(R.string.not_connected_to_server));
             presenter.showErrorMessage(presenter.activity.getString(R.string.request_error));
         }
 
-        presenter.setReadyState(presenter.connectButton);
+        presenter.setReadyState(presenter.connectButton); // Set the app state back to ready
     }
 
-
-    private static BigInteger readFibonacciXMLRPCResponse(
-            InputStream in) throws IOException, NumberFormatException,
-            StringIndexOutOfBoundsException {
-
-        StringBuffer sb = new StringBuffer();
-        Reader reader = new InputStreamReader(in, "UTF-8");
-        int c;
-        while ((c = in.read()) != -1) sb.append((char) c);
-
-        String document = sb.toString();
-        String startTag = "<value><double>";
-        String endTag = "</double></value>";
-        int start = document.indexOf(startTag) + startTag.length();
-        int end = document.indexOf(endTag);
-        String result = document.substring(start, end);
-        return new BigInteger(result);
-
+    private void delayProcess() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

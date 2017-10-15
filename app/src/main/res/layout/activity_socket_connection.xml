@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.mysocketap.mysocketapp.views.SocketConnectionActivity">
 
-    <!-- I used a scrollview to allow scroling incase user is in landscape mode and the screen cuts off-->
+    <!-- I used a scrollview to allow scrolling in-case user is in landscape mode and the screen cuts off-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,7 +20,7 @@
             android:paddingRight="20dp"
             android:paddingTop="20dp">
 
-            <!-- I used a multiline EditText and disabled editing for pursely convinience as it houses text and scrolls -->
+            <!-- I used a multiline EditText and disabled editing for purely convenience as it houses text and scrolls -->
             <EditText
                 style="@style/ResponseDisplayer"
                 android:id="@+id/txtDisplay"/>
@@ -31,14 +31,14 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="30dp">
 
-            <!-- This is a button that triggers the startConnection method -->
+            <!-- Button that triggers the startConnection method -->
             <Button
                 style="@style/btnConnection"
                 android:id="@+id/btnConnect"
                 android:onClick="onConnectButtonClicked"
                 android:text="@string/connect_to_server"/>
 
-            <!-- This is a loading spinner that appears over the button while the app is busy -->
+            <!-- Loading spinner that appears over the button while the app is busy -->
             <ProgressBar style="@style/LoadingSpinner"
                 android:id="@+id/progressBar"/>
 
