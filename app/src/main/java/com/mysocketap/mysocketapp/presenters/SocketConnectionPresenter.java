@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.mysocketap.mysocketapp.R;
 import com.mysocketap.mysocketapp.constants.Constants;
-import com.mysocketap.mysocketapp.providers.DoNetworkConnection;
+import com.mysocketap.mysocketapp.providers.SocketConnectionProvider;
 import com.mysocketap.mysocketapp.views.ISocketConnectionView;
 
 import java.io.File;
@@ -93,8 +93,8 @@ public class SocketConnectionPresenter implements ISocketConnectionPresenter {
             return;
 
         request = Constants.REQUESTXML;
-        DoNetworkConnection doNetworkConnection = new DoNetworkConnection(this);
-        doNetworkConnection.execute(request);
+        SocketConnectionProvider socketConnectionProvider = new SocketConnectionProvider(this);
+        socketConnectionProvider.execute(request);
     }
 
     @Override

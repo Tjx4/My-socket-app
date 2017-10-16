@@ -15,7 +15,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class DoNetworkConnection extends AsyncTask<String, Integer, String> {
+public class SocketConnectionProvider extends AsyncTask<String, Integer, String> {
 
     private final String LOGSTRING = "log_string";
     private String ip = "196.37.22.179";
@@ -24,7 +24,7 @@ public class DoNetworkConnection extends AsyncTask<String, Integer, String> {
     private Socket socket;
     private SocketConnectionPresenter presenter;
 
-    public DoNetworkConnection(SocketConnectionPresenter presenter) {
+    public SocketConnectionProvider(SocketConnectionPresenter presenter) {
         this.presenter = presenter;
     }
 
