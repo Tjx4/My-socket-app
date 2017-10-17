@@ -83,6 +83,10 @@ public class SocketConnectionProvider extends AsyncTask<String, Integer, String>
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
 
+        // if app is closed do not do anything
+        if(appDisposed())
+            return;
+
         if(isSuccessful) {
             // Write the server response to readme.txt and  also show it on the display plus notify the user that the request was successfull
             presenter.writeToReadmetxtAndShowResults(s);
@@ -96,6 +100,10 @@ public class SocketConnectionProvider extends AsyncTask<String, Integer, String>
         }
 
         presenter.setReadyState(presenter.connectButton); // Set the app state back to ready
+    }
+
+    private boolean appDisposed() {
+        return presenter.ISocketConnectionView == null;
     }
 
     private void delayProcess() {

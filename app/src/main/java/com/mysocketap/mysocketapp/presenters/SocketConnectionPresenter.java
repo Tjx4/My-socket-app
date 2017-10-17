@@ -30,7 +30,7 @@ public class SocketConnectionPresenter implements ISocketConnectionPresenter {
     public Button connectButton;
     private EditText displayTxt;
     private ProgressBar loadingSpinner;
-    private ISocketConnectionView ISocketConnectionView;
+    public ISocketConnectionView ISocketConnectionView;
 
     public SocketConnectionPresenter(ISocketConnectionView ISocketConnectionView) {
         // Constructor initializing dependencies
@@ -52,6 +52,7 @@ public class SocketConnectionPresenter implements ISocketConnectionPresenter {
     public void onDestroy() {
         // Method called when activity life-cycle reaches onDestroy
         ISocketConnectionView = null;
+
     }
 
     @Override
